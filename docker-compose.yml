@@ -1,28 +1,46 @@
+# Verzija docker-a
 version: '3.3'
+# Servisi
 services:
+  # Web servis
   web:
 
     build:
+      # Lokalna mapa u kojoj će se nalaziti web aplikacija
       context: ./php
+      # Docker datoteka
       dockerfile: Dockerfile
+    # Naziv php kontejnera
     container_name: php73
+    # Ovaj kontejner ovisi o kontejneru "db", odnosno bazi podataka
     depends_on:
      - db
+    # Lokalna mapa "php" će biti proecirana na apache web server unutar /var/www/html/ radi izvršavana PHP koda
     volumes:
       - ./php:/var/www/html/
+    # Port 8000 na kojem se izvršava aplikacija
     ports:
       - 8000:80
-
+  # Servis za bazu podataka
   db:
-    
+    # Naziv kontejnera za bazu podataka
     container_name: mysql8
+    # Službena mysql slika sa https://hub.docker.com
     image: mysql:8.0
+    # Postavke baze podataka
     command: --default-authentication-plugin=mysql_native_password
+    # Kad god dode do promjena, restart servisa se radi
     restart: always
+    # Dodatne postavke baze podataka
     environment:
+       # root lozinka
        MYSQL_ROOT_PASSWORD: root
+       # Naziv baze podataka
        MYSQL_DATABASE: test_db
+       # Korisnicko ime koje će se koristiti za spajanje na bazu podataka
        MYSQL_USER: svrdoljak
+       # Lozinka koja će se koristiti za spajanje na bazu podataka
        MYSQL_PASSWORD: docker123
+    # Port 6033 na kojem se izvršava mysql baza podataka   
     ports:
       - 6033:3306
